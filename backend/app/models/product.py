@@ -1,10 +1,14 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.db.base_class import Base
+
+if TYPE_CHECKING:
+    from app.models.category import Category
 
 
 class Product(Base):
@@ -17,7 +21,9 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Numeric(10, 2))
     sizes_text: Mapped[str] = mapped_column(String(200), default="")
     is_active: Mapped[bool] = mapped_column(default=True)
-    category_id: Mapped[int | None] = mapped_column(ForeignKey("categories.id"))
+    category_id: Mapped[int | None] = mapped_column(
+        ForeignKey("categories.id", ondelete="SET NULL")
+    )
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
     category: Mapped["Category"] = relationship(back_populates="products")

@@ -1,11 +1,15 @@
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.db.base_class import Base
+
+if TYPE_CHECKING:
+    from app.models.product import Product
 
 
 class OrderStatus(str, enum.Enum):
@@ -39,3 +43,8 @@ class OrderItem(Base):
     qty: Mapped[int] = mapped_column(default=1)
 
     order: Mapped["Order"] = relationship(back_populates="items")
+    product: Mapped["Product"] = relationship()
+
+    @property
+    def product_name(self) -> str:
+        return self.product.name

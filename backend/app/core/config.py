@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     uploads_dir: str = "/app/uploads"
     telegram_bot_token: str | None = None
     telegram_chat_id: str | None = None
+    admin_email: str = "admin@clothestrade.local"
+    admin_password: str = "change-me"
 
 
 settings = Settings()

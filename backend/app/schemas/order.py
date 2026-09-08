@@ -21,3 +21,19 @@ class OrderOut(BaseModel):
     phone: str
     comment: str
     status: str
+
+
+class OrderItemOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    product_id: int
+    product_name: str
+    qty: int
+
+
+class OrderAdminOut(OrderOut):
+    items: list[OrderItemOut] = []
+
+
+class OrderStatusUpdate(BaseModel):
+    status: str

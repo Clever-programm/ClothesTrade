@@ -27,6 +27,14 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 - Фронтенд (Vite dev server): http://localhost:5173
 - Бэкенд (FastAPI): http://localhost:8000/docs
 
+## Админка (API)
+
+При первом старте бэкенд автоматически создаёт админ-пользователя из переменных окружения `ADMIN_EMAIL` / `ADMIN_PASSWORD` (см. `.env.example`) — обязательно смените пароль перед деплоем.
+
+- `POST /api/v1/auth/login` — форма `username`/`password`, возвращает JWT (`access_token`)
+- `/api/v1/admin/products`, `/api/v1/admin/categories`, `/api/v1/admin/orders` — CRUD, требуют заголовок `Authorization: Bearer <token>`
+- `POST /api/v1/admin/products/{id}/images` — загрузка фото товара (`multipart/form-data`, поле `file`)
+
 ## Миграции БД
 
 ```bash
@@ -55,7 +63,7 @@ nginx/      конфиг reverse proxy
 ## Roadmap
 
 1. ✅ Скелет проекта (структура, docker-compose, Dockerfile'ы, Alembic)
-2. Backend: полноценный CRUD товаров/категорий, JWT-авторизация админки, API заявок
+2. ✅ Backend: CRUD товаров/категорий, JWT-авторизация админки, API заявок
 3. Публичный фронт: каталог, карточка товара, форма заявки
 4. Админка: логин, управление товарами (загрузка фото), список заявок
 5. Уведомления через Telegram-бота
