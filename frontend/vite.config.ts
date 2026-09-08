@@ -6,5 +6,9 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    proxy: {
+      "/api": { target: "http://backend:8000", changeOrigin: true },
+      "/uploads": { target: "http://backend:8000", changeOrigin: true },
+    },
   },
 });
