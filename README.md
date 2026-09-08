@@ -35,6 +35,17 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 - `/api/v1/admin/products`, `/api/v1/admin/categories`, `/api/v1/admin/orders` — CRUD, требуют заголовок `Authorization: Bearer <token>`
 - `POST /api/v1/admin/products/{id}/images` — загрузка фото товара (`multipart/form-data`, поле `file`)
 
+## Уведомления в Telegram
+
+При создании заявки на сайте бэкенд отправляет сообщение в Telegram с контактами клиента и составом заказа. Если переменные не заданы, уведомление просто не отправляется — заявка всё равно сохраняется.
+
+Как настроить:
+
+1. Создайте бота через [@BotFather](https://t.me/BotFather) — команда `/newbot`, в ответ придёт токен вида `123456789:AAExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`. Впишите его в `TELEGRAM_BOT_TOKEN` в `.env`.
+2. Напишите своему новому боту любое сообщение (иначе он не сможет писать вам первым).
+3. Узнайте свой chat_id — проще всего через [@userinfobot](https://t.me/userinfobot) (напишите ему `/start`, он пришлёт ваш ID). Впишите его в `TELEGRAM_CHAT_ID`.
+4. Перезапустите бэкенд: `docker compose up -d backend`.
+
 ## Миграции БД
 
 ```bash
@@ -64,8 +75,8 @@ nginx/      конфиг reverse proxy
 
 1. ✅ Скелет проекта (структура, docker-compose, Dockerfile'ы, Alembic)
 2. ✅ Backend: CRUD товаров/категорий, JWT-авторизация админки, API заявок
-3. Публичный фронт: каталог, карточка товара, форма заявки
-4. Админка: логин, управление товарами (загрузка фото), список заявок
-5. Уведомления через Telegram-бота
+3. ✅ Публичный фронт: каталог, карточка товара, форма заявки
+4. ✅ Админка: логин, управление товарами (загрузка фото), список заявок
+5. ✅ Уведомления через Telegram-бота
 6. Полировка: адаптивность, SEO, оптимизация фото
 7. Деплой: домен + TLS (Let's Encrypt) на статический IP
