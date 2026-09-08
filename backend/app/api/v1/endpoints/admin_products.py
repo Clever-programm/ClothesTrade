@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.product import Product, ProductImage
 from app.schemas.product import ProductCreate, ProductOut, ProductUpdate
+from app.utils.images import optimize_image
 from app.utils.slugify import slugify
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
@@ -65,11 +66,15 @@ async def upload_product_image(
     if file.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(status_code=400, detail="Разрешены только JPEG, PNG, WebP")
 
-    ext = os.path.splitext(file.filename or "")[1].lower() or ".jpg"
-    filename = f"{uuid.uuid4().hex}{ext}"
+    try:
+        optimized = optimize_image(await file.read())
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail="Не удалось обработать изображение") from exc
+
+    filename = f"{uuid.uuid4().hex}.jpg"
     path = os.path.join(settings.uploads_dir, filename)
     with open(path, "wb") as f:
-        f.write(await file.read())
+        f.write(optimized)
 
     next_order = len(product.images)
     db.add(ProductImage(product_id=product.id, url=f"/uploads/{filename}", sort_order=next_order))

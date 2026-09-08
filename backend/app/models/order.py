@@ -39,12 +39,13 @@ class OrderItem(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
-    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    # Nullable + SET NULL: a product can be deleted later without breaking past orders.
+    product_id: Mapped[int | None] = mapped_column(
+        ForeignKey("products.id", ondelete="SET NULL")
+    )
+    # Snapshot of the product name at order time, so history reads fine even after deletion.
+    product_name: Mapped[str] = mapped_column(String(200))
     qty: Mapped[int] = mapped_column(default=1)
 
     order: Mapped["Order"] = relationship(back_populates="items")
-    product: Mapped["Product"] = relationship()
-
-    @property
-    def product_name(self) -> str:
-        return self.product.name
+    product: Mapped["Product | None"] = relationship()

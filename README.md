@@ -33,7 +33,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 - `POST /api/v1/auth/login` — форма `username`/`password`, возвращает JWT (`access_token`)
 - `/api/v1/admin/products`, `/api/v1/admin/categories`, `/api/v1/admin/orders` — CRUD, требуют заголовок `Authorization: Bearer <token>`
-- `POST /api/v1/admin/products/{id}/images` — загрузка фото товара (`multipart/form-data`, поле `file`)
+- `POST /api/v1/admin/products/{id}/images` — загрузка фото товара (`multipart/form-data`, поле `file`). Любое фото (JPEG/PNG/WebP) автоматически сжимается и уменьшается до 1600px по длинной стороне — с телефона можно грузить фото как есть, размер файла на сайте будет в разы меньше.
 
 ## Уведомления в Telegram
 
@@ -78,5 +78,5 @@ nginx/      конфиг reverse proxy
 3. ✅ Публичный фронт: каталог, карточка товара, форма заявки
 4. ✅ Админка: логин, управление товарами (загрузка фото), список заявок
 5. ✅ Уведомления через Telegram-бота
-6. Полировка: адаптивность, SEO, оптимизация фото
+6. ✅ Полировка: адаптивность, SEO, оптимизация фото
 7. Деплой: домен + TLS (Let's Encrypt) на статический IP

@@ -70,6 +70,12 @@ label {
   padding: 24px;
 }
 
+@media (max-width: 480px) {
+  .page {
+    padding: 16px;
+  }
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -95,12 +101,35 @@ label {
   gap: 16px;
 }
 
+@media (max-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
 .product-card {
   display: block;
   border: 1px solid #e5e0da;
   border-radius: 8px;
   padding: 16px;
   background: #fff;
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    padding: 8px;
+  }
+
+  .product-card h3 {
+    font-size: 14px;
+    margin: 4px 0;
+  }
+
+  .product-card p {
+    font-size: 13px;
+    margin: 0;
+  }
 }
 
 .product-card img {

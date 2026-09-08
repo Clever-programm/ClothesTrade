@@ -22,7 +22,7 @@ export interface Category {
 }
 
 export interface OrderItemOut {
-  product_id: number;
+  product_id: number | null;
   product_name: string;
   qty: number;
 }

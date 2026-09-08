@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { fetchCategories, fetchProducts, type Category, type Product } from "../api";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export default function CatalogPage() {
+  useDocumentTitle("ClothesTrade — одежда ручной работы");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [categoryId, setCategoryId] = useState<number | "all">("all");
@@ -52,7 +54,9 @@ export default function CatalogPage() {
       <div className="catalog-grid">
         {visible.map((product) => (
           <Link className="product-card" to={`/product/${product.slug}`} key={product.id}>
-            {product.images[0] && <img src={product.images[0].url} alt={product.name} />}
+            {product.images[0] && (
+              <img src={product.images[0].url} alt={product.name} loading="lazy" />
+            )}
             <h3>{product.name}</h3>
             <p>{product.price} ₽</p>
           </Link>

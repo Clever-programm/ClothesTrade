@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 
 import { fetchProduct, type Product } from "../api";
 import OrderForm from "../components/OrderForm";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +17,8 @@ export default function ProductPage() {
       .catch(() => setError("Товар не найден"));
   }, [slug]);
 
+  useDocumentTitle(product ? `${product.name} — ClothesTrade` : "ClothesTrade");
+
   if (error) return <p className="page">{error}</p>;
   if (!product) return <p className="page">Загрузка...</p>;
 
@@ -27,8 +30,13 @@ export default function ProductPage() {
       <div className="product-detail">
         <div className="product-images">
           {product.images.length === 0 && <div className="product-image-placeholder" />}
-          {product.images.map((img) => (
-            <img key={img.id} src={img.url} alt={product.name} />
+          {product.images.map((img, i) => (
+            <img
+              key={img.id}
+              src={img.url}
+              alt={product.name}
+              loading={i === 0 ? "eager" : "lazy"}
+            />
           ))}
         </div>
         <div className="product-info">

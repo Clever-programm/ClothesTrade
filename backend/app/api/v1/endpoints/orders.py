@@ -1,8 +1,10 @@
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models.order import Order, OrderItem
+from app.models.product import Product
 from app.schemas.order import OrderCreate, OrderOut
 from app.services.telegram import send_telegram_message
 
@@ -27,11 +29,26 @@ def _format_order_message(order: Order) -> str:
 def create_order(
     payload: OrderCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)
 ) -> Order:
+    product_ids = {item.product_id for item in payload.items}
+    products = {p.id: p for p in db.scalars(select(Product).where(Product.id.in_(product_ids)))}
+    missing = product_ids - products.keys()
+    if missing:
+        raise HTTPException(
+            status_code=400, detail=f"Товар не найден: {', '.join(map(str, missing))}"
+        )
+
     order = Order(
         customer_name=payload.customer_name,
         phone=payload.phone,
         comment=payload.comment,
-        items=[OrderItem(product_id=item.product_id, qty=item.qty) for item in payload.items],
+        items=[
+            OrderItem(
+                product_id=item.product_id,
+                product_name=products[item.product_id].name,
+                qty=item.qty,
+            )
+            for item in payload.items
+        ],
     )
     db.add(order)
     db.commit()

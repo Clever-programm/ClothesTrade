@@ -26,7 +26,7 @@ class OrderOut(BaseModel):
 class OrderItemOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    product_id: int
+    product_id: int | None
     product_name: str
     qty: int
 
